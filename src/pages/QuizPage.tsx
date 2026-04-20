@@ -47,12 +47,14 @@ function QuizImageBlock({ questionId, category }: { questionId: string; category
 
   if (src && !error) {
     return (
-      <img
-        className="quiz-image"
-        src={src}
-        alt=""
-        onError={() => setError(true)}
-      />
+      <div className="quiz-image-wrapper">
+        <img
+          className="quiz-image"
+          src={src}
+          alt=""
+          onError={() => setError(true)}
+        />
+      </div>
     )
   }
 

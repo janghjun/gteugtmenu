@@ -23,10 +23,10 @@ export const DEFAULT_PLACEHOLDER = `${PLACEHOLDER_BASE}/default.svg`
 // key: question.id   value: public URL
 // 파일 위치: public/assets/images/quiz/{category}/{visualAssetKey}.{ext}
 const ASSET_MAP: Record<string, string> = {
-  // q08: '/assets/images/quiz/dessert_trend/dalgonaLatte_2020.jpg',
-  // q09: '/assets/images/quiz/snack_recall/tanghulu_2023.jpg',
-  // q32: '/assets/images/quiz/convenience_dessert/convenienceStoreLunch_2016.jpg',
-  // q47: '/assets/images/quiz/wellness_food/greekYogurt_2015.jpg',
+  q08: '/assets/images/quiz/dessert_trend/dalgonaLatte_2020.jpg',
+  q09: '/assets/images/quiz/snack_recall/tanghulu_2023.jpg',
+  q32: '/assets/images/quiz/convenience_dessert/convenienceStoreLunch_2016.jpg',
+  q47: '/assets/images/quiz/wellness_food/greekYogurt_2015.jpg',
 }
 
 // ── 공개 API ──────────────────────────────────────────────────
