@@ -14,6 +14,7 @@ export function createQuizSession(questions: Question[]): QuizSession {
     answers: {},
     startedAt: new Date(),
     completedAt: null,
+    sessionType: 'normal',
   }
 }
 
@@ -91,5 +92,6 @@ export function createReviewSession(
     answers: {},
     startedAt: new Date(),
     completedAt: null,
+    sessionType: 'review',
   }
 }

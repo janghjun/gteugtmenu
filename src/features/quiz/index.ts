@@ -1,5 +1,6 @@
-export type { Question, QuestionFormat, EvidenceLevel, QuestionCategory, QuizSession, OxQuestion, MenuToYearQuestion, YearToMenuQuestion, ImageToYearQuestion } from './types'
+export type { Question, QuestionFormat, EvidenceLevel, QuestionCategory, QuizSession, SessionType, OxQuestion, MenuToYearQuestion, YearToMenuQuestion, ImageToYearQuestion } from './types'
 export { validateQuestion } from './schema'
 export type { ValidationResult } from './schema'
 export { createQuizSession, getCurrentQuestion, submitAnswer, goNext, isCompleted, isCorrect, createReviewSession } from './engine'
 export type { ReviewSessionOptions } from './engine'
+export { createDailySession, getDailyDateKey, DAILY_QUIZ_COUNT } from './daily'

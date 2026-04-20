@@ -8,9 +8,10 @@ import './HomePage.css'
 
 interface Props {
   onStart: () => void
+  onStartDaily: () => void
 }
 
-export default function HomePage({ onStart }: Props) {
+export default function HomePage({ onStart, onStartDaily }: Props) {
   useEffect(() => { logEvent(EVENTS.HOME_VIEW) }, [])
   const lastRecord = useMemo(() => getLastRecord(), [])
 
@@ -53,6 +54,21 @@ export default function HomePage({ onStart }: Props) {
           ))}
         </div>
       </div>
+
+      {/* 오늘의 퀴즈 카드 */}
+      <button
+        className="home-daily-card"
+        onClick={() => {
+          logEvent(EVENTS.QUIZ_START, { pack_id: `${mockPack.packId}__daily` })
+          onStartDaily()
+        }}
+      >
+        <div className="home-daily-info">
+          <span className="home-daily-title">오늘의 퀴즈</span>
+          <span className="home-daily-meta">3문제 · 매일 새로 나와요</span>
+        </div>
+        <span className="home-daily-arrow">›</span>
+      </button>
 
       <button
         className="home-cta"

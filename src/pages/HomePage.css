@@ -105,6 +105,48 @@
   line-height: 1.3;
 }
 
+/* 오늘의 퀴즈 카드 */
+.home-daily-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #FFF7ED;
+  border: 1.5px solid #FFEDD5;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.home-daily-card:active {
+  background: #FFEDD5;
+}
+
+.home-daily-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.home-daily-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #C2410C;
+}
+
+.home-daily-meta {
+  font-size: 12px;
+  color: #FB923C;
+}
+
+.home-daily-arrow {
+  font-size: 20px;
+  color: #FB923C;
+}
+
 /* CTA */
 .home-cta {
   width: 100%;

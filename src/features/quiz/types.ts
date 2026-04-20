@@ -47,10 +47,13 @@ export type Question =
   | ImageToYearQuestion
   | OxQuestion
 
+export type SessionType = 'normal' | 'daily' | 'review'
+
 export interface QuizSession {
   questions: Question[]
   currentIndex: number
   answers: Record<string, string> // questionId → 선택한 답
   startedAt: Date
   completedAt: Date | null
+  sessionType?: SessionType
 }

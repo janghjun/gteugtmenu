@@ -16,7 +16,7 @@ import './QuizPage.css'
 interface Props {
   onFinish: (session: QuizSession) => void
   initialSession?: QuizSession
-  reviewLabel?: string
+  quizLabel?: string  // "오답 복습" | "오늘의 퀴즈" 등
 }
 
 type Status = 'loading' | 'ready' | 'error'
@@ -79,7 +79,7 @@ function QuizImageBlock({ questionId, category }: { questionId: string; category
   )
 }
 
-export default function QuizPage({ onFinish, initialSession, reviewLabel }: Props) {
+export default function QuizPage({ onFinish, initialSession, quizLabel }: Props) {
   const [status, setStatus] = useState<Status>('loading')
   const [session, setSession] = useState<QuizSession | null>(null)
   const [loadKey, setLoadKey] = useState(0)
@@ -157,9 +157,9 @@ export default function QuizPage({ onFinish, initialSession, reviewLabel }: Prop
 
   return (
     <main className="quiz-screen">
-      {/* 오답 복습 라벨 */}
-      {reviewLabel && (
-        <span className="quiz-review-label">{reviewLabel}</span>
+      {/* 세션 라벨 (오늘의 퀴즈 / 오답 복습) */}
+      {quizLabel && (
+        <span className="quiz-review-label">{quizLabel}</span>
       )}
 
       {/* 진행률 */}
