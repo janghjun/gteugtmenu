@@ -4,6 +4,7 @@ import type { CategoryStat, QuizResult } from '../features/result'
 import type { QuizSession } from '../features/quiz'
 import { logEvent, EVENTS } from '../features/analytics'
 import { mockPack } from '../features/content'
+import { saveRecord } from '../features/history'
 import './ResultPage.css'
 
 interface Props {
@@ -47,6 +48,14 @@ export default function ResultPage({ session, onRestart }: Props) {
       total:       result.score.total,
       result_type: result.resultType.id,
       pack_id:     mockPack.packId,
+    })
+    saveRecord({
+      playedAt:     new Date().toISOString(),
+      correctCount: result.score.correct,
+      totalCount:   result.score.total,
+      score:        result.score.rate,
+      resultType:   result.resultType.id,
+      packId:       mockPack.packId,
     })
   }, [result])
 

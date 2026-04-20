@@ -1,7 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { mockPack, activeSeasonMeta } from '../features/content'
 import type { MenuToYearQuestion } from '../features/quiz'
 import { logEvent, EVENTS } from '../features/analytics'
+import { getLastRecord } from '../features/history'
+import { RESULT_TYPES } from '../features/result'
 import './HomePage.css'
 
 interface Props {
@@ -10,6 +12,7 @@ interface Props {
 
 export default function HomePage({ onStart }: Props) {
   useEffect(() => { logEvent(EVENTS.HOME_VIEW) }, [])
+  const lastRecord = useMemo(() => getLastRecord(), [])
 
   // 팩이 비어있으면 에러 화면 — 로컬 JSON이므로 실제로는 발생하지 않음
   if (mockPack.questions.length === 0) {
@@ -32,6 +35,14 @@ export default function HomePage({ onStart }: Props) {
       <h1 className="home-title">그때그메뉴</h1>
       <p className="home-desc">그 메뉴, 그 과자, 그 디저트가 언제 유행했는지 맞혀봐요</p>
       <p className="home-meta">10문제 · 1분</p>
+
+      {lastRecord && (
+        <p className="home-last-record">
+          최근 결과: {RESULT_TYPES[lastRecord.resultType as keyof typeof RESULT_TYPES]?.label ?? lastRecord.resultType}
+          {' '}·{' '}
+          {lastRecord.correctCount}/{lastRecord.totalCount}점
+        </p>
+      )}
 
       <div className="home-example-card">
         <span className="home-example-label">예시 문제</span>

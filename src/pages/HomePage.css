@@ -51,6 +51,13 @@
   margin-bottom: 36px;
 }
 
+/* 최근 기록 */
+.home-last-record {
+  font-size: 13px;
+  color: #8B95A1;
+  margin-bottom: 20px;
+}
+
 /* 예시 문제 카드 */
 .home-example-card {
   width: 100%;
