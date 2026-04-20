@@ -4,10 +4,14 @@ import rawPack from './mockPack.json'
 
 // ── 공개 타입 ─────────────────────────────────────────────────
 
+export type PackType = 'core' | 'seasonal' | 'experimental'
+
 export interface PackMeta {
   packId:     string
   title:      string
   subtitle:   string
+  type:       PackType
+  /** @deprecated isSeasonal → type === 'seasonal' で代替。後方互換のため残す */
   isSeasonal: boolean
   startsAt:   string | null  // "YYYY-MM-DD"
   endsAt:     string | null
@@ -101,25 +105,35 @@ async function fetchRemote(url: string): Promise<QuizPack> {
   return pack
 }
 
+const PACK_TYPES = ['core', 'seasonal', 'experimental'] as const
+const STATUSES   = ['active', 'scheduled', 'expired'] as const
+
 function parsePackMeta(raw: unknown): PackMeta | undefined {
   if (typeof raw !== 'object' || raw === null) return undefined
   const m = raw as Record<string, unknown>
-  const STATUSES = ['active', 'scheduled', 'expired'] as const
+
   if (
-    typeof m.packId !== 'string' ||
-    typeof m.title !== 'string' ||
-    typeof m.subtitle !== 'string' ||
-    typeof m.isSeasonal !== 'boolean' ||
+    typeof m.packId    !== 'string' ||
+    typeof m.title     !== 'string' ||
+    typeof m.subtitle  !== 'string' ||
     !Array.isArray(m.categories) ||
     !STATUSES.includes(m.status as typeof STATUSES[number])
   ) return undefined
+
+  // type 필드: 없으면 isSeasonal로 하위 호환 추론
+  const rawType = m.type as string | undefined
+  const type: PackType = PACK_TYPES.includes(rawType as PackType)
+    ? (rawType as PackType)
+    : (m.isSeasonal === true ? 'seasonal' : 'core')
+
   return {
     packId:     m.packId,
     title:      m.title,
     subtitle:   m.subtitle,
-    isSeasonal: m.isSeasonal,
+    type,
+    isSeasonal: type === 'seasonal',
     startsAt:   typeof m.startsAt === 'string' ? m.startsAt : null,
-    endsAt:     typeof m.endsAt === 'string' ? m.endsAt : null,
+    endsAt:     typeof m.endsAt   === 'string' ? m.endsAt   : null,
     categories: m.categories as string[],
     status:     m.status as PackMeta['status'],
   }

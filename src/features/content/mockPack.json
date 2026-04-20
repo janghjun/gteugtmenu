@@ -5,6 +5,7 @@
     "packId": "base-pack-v1",
     "title": "그때그메뉴 기본팩",
     "subtitle": "2000 — 2020년대",
+    "type": "core",
     "isSeasonal": false,
     "startsAt": null,
     "endsAt": null,
