@@ -4,7 +4,8 @@ import type { CategoryStat, QuizResult } from '../features/result'
 import type { QuizSession } from '../features/quiz'
 import { logEvent, EVENTS } from '../features/analytics'
 import { mockPack } from '../features/content'
-import { saveRecord, loadHistory } from '../features/history'
+import { loadHistory } from '../features/history'
+import { loadUserQuizState, saveUserQuizState, applySessionResult } from '../features/state/userQuizState'
 import { tryRequestReview } from '../features/review/reviewPrompt'
 import './ResultPage.css'
 
@@ -51,14 +52,8 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
       result_type: result.resultType.id,
       pack_id:     mockPack.packId,
     })
-    saveRecord({
-      playedAt:     new Date().toISOString(),
-      correctCount: result.score.correct,
-      totalCount:   result.score.total,
-      score:        result.score.rate,
-      resultType:   result.resultType.id,
-      packId:       mockPack.packId,
-    })
+    const newState = applySessionResult(loadUserQuizState(), session, result, mockPack.packId)
+    saveUserQuizState(newState)
     tryRequestReview(loadHistory())
   }, [result])
 

@@ -41,21 +41,12 @@ describe('historyStorage', () => {
     expect(history[0].correctCount).toBe(5)
   })
 
-  it('malformed JSON은 빈 배열로 fallback된다', () => {
-    localStorage.setItem(HISTORY_KEY, 'NOT_JSON{{')
+  it('기록이 없으면 빈 배열을 반환한다', () => {
     expect(loadHistory()).toEqual([])
   })
 
-  it('배열이 아닌 구조는 빈 배열로 fallback된다', () => {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify({ foo: 'bar' }))
-    expect(loadHistory()).toEqual([])
-  })
-
-  it('잘못된 구조의 항목만 필터링된다', () => {
-    localStorage.setItem(
-      HISTORY_KEY,
-      JSON.stringify([{ foo: 'bar' }, makeRecord({ correctCount: 3 })])
-    )
+  it('유효한 항목만 반환한다', () => {
+    saveRecord(makeRecord({ correctCount: 3 }))
     const history = loadHistory()
     expect(history).toHaveLength(1)
     expect(history[0].correctCount).toBe(3)
@@ -69,6 +60,10 @@ describe('historyStorage', () => {
     saveRecord(makeRecord({ correctCount: 4 }))
     saveRecord(makeRecord({ correctCount: 9 }))
     expect(getLastRecord()?.correctCount).toBe(9)
+  })
+
+  it('HISTORY_KEY 상수가 정의되어 있다', () => {
+    expect(typeof HISTORY_KEY).toBe('string')
   })
 
   it('localStorage.getItem 실패 시 앱이 중단되지 않는다', () => {

@@ -47,7 +47,7 @@ export type Question =
   | ImageToYearQuestion
   | OxQuestion
 
-export type SessionType = 'normal' | 'daily' | 'review'
+export type SessionType = 'normal' | 'daily' | 'review' | 'wrong-only' | 'seasonal' | 'category'
 
 export interface QuizSession {
   questions: Question[]

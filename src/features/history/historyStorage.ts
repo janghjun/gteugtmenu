@@ -1,50 +1,67 @@
 import type { PlayRecord } from './types'
+import type { QuizHistoryItem } from '../state/userQuizState'
+import { loadUserQuizState, saveUserQuizState } from '../state/userQuizState'
+import { STORAGE_KEYS } from '../../constants/storageKeys'
 
-export const HISTORY_KEY = 'gtm_history'
-const MAX_RECORDS = 5
+export const HISTORY_KEY = STORAGE_KEYS.LEGACY_HISTORY  // 기존 테스트 / 롤백 대비 유지
+const COMPAT_LIMIT = 5
 
-function isValidRecord(r: unknown): r is PlayRecord {
-  if (!r || typeof r !== 'object') return false
-  const rec = r as Record<string, unknown>
-  return (
-    typeof rec.playedAt === 'string' &&
-    typeof rec.correctCount === 'number' &&
-    typeof rec.totalCount === 'number' &&
-    typeof rec.score === 'number' &&
-    typeof rec.resultType === 'string' &&
-    typeof rec.packId === 'string'
-  )
+function toPlayRecord(item: QuizHistoryItem): PlayRecord {
+  return {
+    playedAt:     item.playedAt,
+    correctCount: item.correctCount,
+    totalCount:   item.totalCount,
+    score:        item.score,
+    resultType:   item.resultType,
+    packId:       item.packId,
+  }
 }
 
-function parseHistory(): PlayRecord[] {
+/**
+ * @deprecated ResultPage는 applySessionResult + saveUserQuizState를 사용하세요.
+ * 기존 코드 / 테스트 호환을 위해 유지 — PlayRecord를 UserQuizState.history에 기록합니다.
+ */
+export function saveRecord(record: PlayRecord): void {
   try {
-    const raw = localStorage.getItem(HISTORY_KEY)
-    if (!raw) return []
-    const parsed: unknown = JSON.parse(raw)
-    if (!Array.isArray(parsed)) return []
-    return parsed.filter(isValidRecord)
+    const current = loadUserQuizState()
+    const item: QuizHistoryItem = {
+      sessionId:   `legacy-${Date.now().toString(36)}`,
+      sessionType: 'normal',
+      playedAt:     record.playedAt,
+      correctCount: record.correctCount,
+      totalCount:   record.totalCount,
+      score:        record.score,
+      resultType:   record.resultType,
+      packId:       record.packId,
+    }
+    saveUserQuizState({
+      ...current,
+      latestSessionId:  item.sessionId,
+      latestScore:      record.score,
+      latestResultType: record.resultType,
+      latestPackId:     record.packId,
+      history: [item, ...current.history].slice(0, COMPAT_LIMIT),
+    })
+  } catch {
+    // 저장 실패 무시
+  }
+}
+
+/** 저장된 전체 기록 반환 (최신순, 최대 5개) — PlayRecord 호환 레이어 */
+export function loadHistory(): PlayRecord[] {
+  try {
+    return loadUserQuizState().history.slice(0, COMPAT_LIMIT).map(toPlayRecord)
   } catch {
     return []
   }
 }
 
-/** 새 결과를 맨 앞에 추가하고 최대 5개까지만 유지 */
-export function saveRecord(record: PlayRecord): void {
-  try {
-    const history = parseHistory()
-    const updated = [record, ...history].slice(0, MAX_RECORDS)
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(updated))
-  } catch {
-    // 쓰기 실패(용량 초과, 프라이빗 모드 등) — 무시
-  }
-}
-
-/** 저장된 전체 기록 반환 (최신순) */
-export function loadHistory(): PlayRecord[] {
-  return parseHistory()
-}
-
 /** 가장 최근 기록 1개, 없으면 null */
 export function getLastRecord(): PlayRecord | null {
-  return parseHistory()[0] ?? null
+  try {
+    const first = loadUserQuizState().history[0]
+    return first ? toPlayRecord(first) : null
+  } catch {
+    return null
+  }
 }
