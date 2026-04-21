@@ -14,5 +14,7 @@ dist/
 *.local
 .vscode/settings.json
 
-# Claude Code 로컬 설정 (개인 설정, 저장소에 포함하지 않음)
-.claude/
+# Claude Code — 개인 설정만 제외, 프로젝트 툴링은 추적
+.claude/settings.local.json
+.claude/cache/
+.claude/tmp/
