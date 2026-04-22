@@ -77,14 +77,36 @@ export async function shareResult(data: ShareCardData): Promise<ShareOutcome> {
 export type CaptureOutcome = 'downloaded' | 'manual'
 
 /**
- * 카드 DOM 요소를 이미지로 캡처해 저장합니다.
- * 현재: 스크린샷 안내(manual)를 반환하는 stub.
- * TODO: html2canvas(_cardEl, { scale: 2 }) → blob → <a> download
+ * 카드 DOM 요소를 이미지로 캡처해 다운로드합니다.
+ * html2canvas(scale=2) → blob → <a download> → revoke
+ * 실패 시 수동 스크린샷 안내(manual)를 반환합니다.
  */
 export async function captureShareCard(
-  _cardEl: HTMLElement | null,
+  cardEl: HTMLElement | null,
 ): Promise<CaptureOutcome> {
-  return 'manual'
+  if (!cardEl) return 'manual'
+  try {
+    const html2canvas = (await import('html2canvas')).default
+    const canvas = await html2canvas(cardEl, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false,
+    })
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, 'image/png'),
+    )
+    if (!blob) return 'manual'
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `먹퀴즈-결과카드.png`
+    a.click()
+    URL.revokeObjectURL(url)
+    return 'downloaded'
+  } catch {
+    return 'manual'
+  }
 }
 
 // ── 스토리 카드 공유 ─────────────────────────────────────────────

@@ -315,7 +315,11 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
             className="result-share-btn result-share-btn--primary"
             onClick={handleSaveCard}
           >
-            {captureOutcome === 'manual' ? '저장 안내 확인' : '카드 저장하기'}
+            {captureOutcome === 'downloaded'
+              ? '저장됐어요 ✓'
+              : captureOutcome === 'manual'
+              ? '저장 안내 확인'
+              : '카드 저장하기'}
           </button>
           <button
             className={`result-share-btn${shareOutcome === 'unavailable' ? ' result-share-btn--muted' : ''}`}
