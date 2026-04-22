@@ -1,6 +1,6 @@
 ---
 name: kpi-dashboard
-description: 그때그메뉴 v3 운영 대시보드 KPI 정의 및 모니터링 기준 문서
+description: 먹퀴즈 v3 운영 대시보드 KPI 정의 및 모니터링 기준 문서
 type: operations
 version: 1.0.0
 related-files:

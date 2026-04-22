@@ -1,4 +1,4 @@
-const APP_NAME = '그때그메뉴'
+const APP_NAME = '먹퀴즈'
 
 const RESULT_EMOJI: Record<string, string> = {
   'dessert-sensor':         '🍰',

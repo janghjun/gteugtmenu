@@ -80,7 +80,7 @@ export default function HomePage({ onStart, onStartDaily, onStartReview, onStart
 
       {/* ── 헤더 ────────────────────────────────────── */}
       <div className="home-header">
-        <h1 className="home-title">그때그메뉴</h1>
+        <h1 className="home-title">먹퀴즈</h1>
         <span className="home-badge">
           {activeSeasonMeta ? activeSeasonMeta.subtitle : (mockPack.meta?.subtitle ?? '2000 — 2020년대')}
         </span>

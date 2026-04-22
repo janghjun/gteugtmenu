@@ -1,6 +1,6 @@
 ## Project
 
-- Apps in Toss 비게임 Mini App: 그때그메뉴
+- Apps in Toss 비게임 Mini App: 먹퀴즈 (foodquiz-app)
 - 목표는 심사 제출 가능한 MVP 구현
 - 핵심 플로우: 홈 → 10문제 → 결과
 

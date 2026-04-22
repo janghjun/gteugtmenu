@@ -168,7 +168,7 @@ export function buildPackFromRaw(raw: unknown): QuizPack {
     return parsePackShape(raw)
   } catch (err) {
     console.error('[content] Pack 파싱 오류:', err)
-    return { packId: 'fallback', title: '그때그메뉴', questions: [] }
+    return { packId: 'fallback', title: '먹퀴즈', questions: [] }
   }
 }
 

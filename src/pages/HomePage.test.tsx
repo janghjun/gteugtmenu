@@ -108,9 +108,9 @@ describe('HomePage 3.0', () => {
     expect(screen.getByText('예시 문제')).toBeInTheDocument()
   })
 
-  it('타이틀 그때그메뉴가 보인다', () => {
+  it('타이틀 먹퀴즈가 보인다', () => {
     render(<HomePage onStart={() => {}} onStartDaily={() => {}} />)
-    expect(screen.getByText('그때그메뉴')).toBeInTheDocument()
+    expect(screen.getByText('먹퀴즈')).toBeInTheDocument()
   })
 })
 

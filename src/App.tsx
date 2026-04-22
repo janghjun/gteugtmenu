@@ -11,7 +11,7 @@ import { resolveAnonymousKey } from './features/identity/anonymousKey'
 
 export type Screen = 'home' | 'quiz' | 'result'
 
-const RESULT_KEY = 'gtm_result'
+const RESULT_KEY = 'mq_result'
 
 function loadSavedSession(): QuizSession | null {
   try {

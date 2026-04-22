@@ -29,7 +29,7 @@ describe('buildShareText', () => {
 
   it('앱 이름이 항상 포함된다', () => {
     const { full } = buildShareText(makeData())
-    expect(full).toContain('그때그메뉴')
+    expect(full).toContain('먹퀴즈')
   })
 
   it('결과 타입별 이모지가 포함된다', () => {
@@ -54,7 +54,7 @@ describe('buildShareText', () => {
   it('resultTypeLabel 비어있으면 fallback 문구를 사용한다', () => {
     const { full } = buildShareText(makeData({ resultTypeLabel: '' }))
     expect(full).toContain('푸드 트렌드 탐험가')
-    expect(full).toContain('그때그메뉴')
+    expect(full).toContain('먹퀴즈')
   })
 
   it('full은 title + body + footer를 포함한다', () => {

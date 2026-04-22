@@ -1,6 +1,6 @@
 ---
 name: smart-message-strategy
-description: 그때그메뉴 Apps in Toss 스마트 메시지 전략 및 트리거 설계 문서
+description: 먹퀴즈 Apps in Toss 스마트 메시지 전략 및 트리거 설계 문서
 type: integration-design
 status: pre-implementation   ← 실제 발송 구현 전 전략 단계
 version: 1.0.0
