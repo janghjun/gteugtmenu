@@ -50,6 +50,8 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
   const [reviewOpen,     setReviewOpen]     = useState(false)
   const [shareOutcome,   setShareOutcome]   = useState<ShareOutcome | null>(null)
   const [captureOutcome, setCaptureOutcome] = useState<CaptureOutcome | null>(null)
+  const [isSaving,       setIsSaving]       = useState(false)
+  const [isSharing,      setIsSharing]      = useState(false)
   const [cardFormat, setCardFormat] = useState<'square' | 'story'>('square')
   const cardRef = useRef<HTMLDivElement>(null)
 
@@ -114,12 +116,17 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
   const canReview = onStartReview !== undefined && wrongNoteQuestions.length > 0
 
   const handleSaveCard = async () => {
+    if (isSaving) return
+    setIsSaving(true)
     const outcome = await captureShareCard(cardRef.current)
     setCaptureOutcome(outcome)
+    setIsSaving(false)
     if (outcome !== 'manual') setTimeout(() => setCaptureOutcome(null), 2200)
   }
 
   const handleShare = async () => {
+    if (isSharing) return
+    setIsSharing(true)
     const outcome = await shareResult(
       {
         resultTypeLabel: resultType.label,
@@ -127,9 +134,10 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
         correctCount:    score.correct,
         totalCount:      score.total,
       },
-      cardRef.current,  // 현재 표시 중인 카드(정방형/스토리) DOM
+      cardRef.current,
     )
     setShareOutcome(outcome)
+    setIsSharing(false)
     setTimeout(() => setShareOutcome(null), 2200)
   }
 
@@ -305,10 +313,15 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
           )}
         </div>
 
-        {/* 저장 안내 토스트 */}
+        {/* 안내 토스트 */}
         {captureOutcome === 'manual' && (
           <p className="result-share-hint">
             화면을 길게 눌러 이미지로 저장해주세요
+          </p>
+        )}
+        {shareOutcome === 'unavailable' && (
+          <p className="result-share-hint result-share-hint--warning">
+            공유할 수 없는 환경이에요. 저장 후 업로드해 주세요
           </p>
         )}
 
@@ -317,9 +330,12 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
           <button
             className="result-share-btn result-share-btn--primary"
             onClick={handleSaveCard}
+            disabled={isSaving || isSharing}
           >
-            {captureOutcome === 'downloaded'
-              ? '저장됐어요 ✓'
+            {isSaving
+              ? <><span className="result-share-spinner" />저장 중...</>
+              : captureOutcome === 'downloaded'
+              ? '이미지가 저장되었어요 ✓'
               : captureOutcome === 'manual'
               ? '저장 안내 확인'
               : '카드 저장하기'}
@@ -327,13 +343,16 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
           <button
             className={`result-share-btn${shareOutcome === 'unavailable' ? ' result-share-btn--muted' : ''}`}
             onClick={handleShare}
+            disabled={isSaving || isSharing}
           >
-            {shareOutcome === 'shared'
+            {isSharing
+              ? <><span className="result-share-spinner result-share-spinner--dark" />공유 중...</>
+              : shareOutcome === 'shared'
               ? '공유했어요 ✓'
               : shareOutcome === 'copied'
               ? '복사했어요 ✓'
               : shareOutcome === 'unavailable'
-              ? '공유를 지원하지 않아요'
+              ? '공유할 수 없어요'
               : '공유하기'}
           </button>
         </div>

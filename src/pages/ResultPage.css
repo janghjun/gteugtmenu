@@ -340,6 +340,39 @@
   cursor: default;
 }
 
+.result-share-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 로딩 스피너 */
+@keyframes result-spin {
+  to { transform: rotate(360deg); }
+}
+
+.result-share-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: result-spin 0.7s linear infinite;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.result-share-spinner--dark {
+  border-color: rgba(0, 0, 0, 0.15);
+  border-top-color: #4E5968;
+}
+
+/* Warning hint */
+.result-share-hint--warning {
+  color: #E03131;
+  background: #FFF5F5;
+}
+
 /* ── CTA 영역 ────────────────────────────── */
 
 .result-cta-group {
