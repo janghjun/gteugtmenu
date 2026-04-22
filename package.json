@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "package": "npm run build && cd dist && zip -r ../foodquiz.ait . && cd ..",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"
