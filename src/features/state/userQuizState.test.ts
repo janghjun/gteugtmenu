@@ -182,3 +182,97 @@ describe('getUserStats', () => {
     expect(getUserStats(state).weakestCategory).toBeNull()
   })
 })
+
+// ── 이탈 정책 ────────────────────────────────────────────────────
+
+describe('applySessionResult — 이탈 정책', () => {
+  it('completedAt이 null이면 throw한다', () => {
+    expect(() =>
+      applySessionResult(
+        defaultUserQuizState(),
+        makeSession({ completedAt: null }),
+        makeResult(),
+        'pack-1',
+      )
+    ).toThrow('미완료 세션')
+  })
+
+  it('completedAt이 null인 세션은 history를 갱신하지 않는다', () => {
+    const before = defaultUserQuizState()
+    try {
+      applySessionResult(before, makeSession({ completedAt: null }), makeResult(), 'p')
+    } catch { /* 예상된 throw */ }
+    expect(before.history).toHaveLength(0)
+  })
+
+  it('completedAt이 null인 세션은 latestScore를 갱신하지 않는다', () => {
+    const before = defaultUserQuizState()
+    try {
+      applySessionResult(before, makeSession({ completedAt: null }), makeResult(0.9), 'p')
+    } catch { /* 예상된 throw */ }
+    expect(before.latestScore).toBeNull()
+  })
+
+  it('completedAt이 null인 세션은 progressByQuestionId를 갱신하지 않는다', () => {
+    const before = defaultUserQuizState()
+    try {
+      applySessionResult(before, makeSession({ completedAt: null }), makeResult(), 'p')
+    } catch { /* 예상된 throw */ }
+    expect(Object.keys(before.progressByQuestionId)).toHaveLength(0)
+  })
+
+  it('daily 모드에서도 completedAt 없으면 throw한다', () => {
+    expect(() =>
+      applySessionResult(
+        defaultUserQuizState(),
+        makeSession({ completedAt: null, sessionType: 'daily' }),
+        makeResult(),
+        'pack-daily',
+      )
+    ).toThrow('미완료 세션')
+  })
+
+  it('wrong-only 모드에서도 completedAt 없으면 throw한다', () => {
+    expect(() =>
+      applySessionResult(
+        defaultUserQuizState(),
+        makeSession({ completedAt: null, sessionType: 'wrong-only' }),
+        makeResult(),
+        'pack-review',
+      )
+    ).toThrow('미완료 세션')
+  })
+
+  it('seasonal 모드에서도 completedAt 없으면 throw한다', () => {
+    expect(() =>
+      applySessionResult(
+        defaultUserQuizState(),
+        makeSession({ completedAt: null, sessionType: 'seasonal' }),
+        makeResult(),
+        'seasonal-pack',
+      )
+    ).toThrow('미완료 세션')
+  })
+
+  it('category 모드에서도 completedAt 없으면 throw한다', () => {
+    expect(() =>
+      applySessionResult(
+        defaultUserQuizState(),
+        makeSession({ completedAt: null, sessionType: 'category' }),
+        makeResult(),
+        'pack-cat',
+      )
+    ).toThrow('미완료 세션')
+  })
+
+  it('completedAt이 있으면 정상 동작한다', () => {
+    const result = applySessionResult(
+      defaultUserQuizState(),
+      makeSession({ completedAt: new Date() }),
+      makeResult(0.5),
+      'pack-ok',
+    )
+    expect(result.latestScore).toBe(0.5)
+    expect(result.history).toHaveLength(1)
+  })
+})

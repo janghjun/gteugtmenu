@@ -28,13 +28,15 @@ const RESULT_LABELS = [
 describe('ResultPage 2.0', () => {
   it('결과 타입 label이 렌더된다', () => {
     render(<ResultPage session={makeCompletedSession()} onRestart={() => {}} />)
-    const found = RESULT_LABELS.some((l) => screen.queryByText(l) !== null)
+    // ShareCardComponent도 같은 label을 표시하므로 queryAllByText 사용
+    const found = RESULT_LABELS.some((l) => screen.queryAllByText(l).length > 0)
     expect(found).toBe(true)
   })
 
   it('점수 배지(N/10)가 렌더된다', () => {
     render(<ResultPage session={makeCompletedSession()} onRestart={() => {}} />)
-    expect(screen.getByText(/^\d+$/)).toBeInTheDocument()
+    // ShareCardComponent의 score-num과 result-score-badge 모두 숫자를 표시함
+    expect(screen.queryAllByText(/^\d+$/).length).toBeGreaterThan(0)
   })
 
   it('다시 해봐요 버튼이 있고 클릭 시 onRestart 호출', () => {
@@ -86,19 +88,64 @@ describe('ResultPage 2.0', () => {
     expect(screen.getByRole('button', { name: '다시 해볼래요' })).toBeInTheDocument()
   })
 
-  it('공유 버튼이 렌더된다', () => {
+  it('카드 저장하기 버튼과 공유하기 버튼이 렌더된다', () => {
     render(<ResultPage session={makeCompletedSession()} onRestart={() => {}} />)
-    expect(screen.getByRole('button', { name: '결과 공유해요' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '카드 저장하기' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '공유하기' })).toBeInTheDocument()
   })
 
-  it('Web Share API 사용 가능 시 공유 후 버튼 텍스트가 바뀐다', async () => {
+  it('스토리 탭 클릭 시 스토리 카드로 전환된다', () => {
+    render(<ResultPage session={makeCompletedSession()} onRestart={() => {}} />)
+    expect(screen.queryByTestId('result-story-share-card')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: '스토리' }))
+    expect(screen.getByTestId('result-story-share-card')).toBeInTheDocument()
+  })
+
+  it('오답 없을 때 다시 해봐요가 1순위 CTA로 렌더된다', () => {
+    render(<ResultPage session={makeCompletedSession(true)} onRestart={() => {}} />)
+    const btns = screen.getAllByRole('button')
+    const ctaIdx  = btns.findIndex((b) => b.textContent === '다시 해봐요')
+    const shareIdx = btns.findIndex((b) => b.textContent === '카드 저장하기')
+    expect(ctaIdx).toBeGreaterThanOrEqual(0)
+    expect(shareIdx).toBeGreaterThan(ctaIdx)
+  })
+
+  it('오답 있고 onStartReview 있을 때 틀린 문제 다시 풀래요가 1순위로 렌더된다', () => {
+    render(
+      <ResultPage
+        session={makeCompletedSession(false)}
+        onRestart={() => {}}
+        onStartReview={() => {}}
+      />
+    )
+    const btns = screen.getAllByRole('button')
+    const reviewIdx = btns.findIndex((b) => b.textContent === '틀린 문제 다시 풀래요')
+    const shareIdx  = btns.findIndex((b) => b.textContent === '카드 저장하기')
+    expect(reviewIdx).toBeGreaterThanOrEqual(0)
+    expect(shareIdx).toBeGreaterThan(reviewIdx)
+  })
+
+  it('추천 버튼이 fallback 문구로 렌더된다', () => {
+    render(<ResultPage session={makeCompletedSession(true)} onRestart={() => {}} />)
+    // 전체 정답이면 weakCat=null → FALLBACK_RECOMMEND
+    expect(screen.getByRole('button', { name: '비슷한 퀴즈도 있어요' })).toBeInTheDocument()
+  })
+
+  it('카드 저장하기 클릭 시 스크린샷 안내 메시지가 뜬다', async () => {
+    render(<ResultPage session={makeCompletedSession()} onRestart={() => {}} />)
+    fireEvent.click(screen.getByRole('button', { name: '카드 저장하기' }))
+    expect(await screen.findByText('화면을 길게 눌러 이미지로 저장해주세요')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '저장 안내 확인' })).toBeInTheDocument()
+  })
+
+  it('Web Share API 사용 가능 시 공유하기 클릭 후 버튼 텍스트가 바뀐다', async () => {
     Object.defineProperty(navigator, 'share', {
       value:        vi.fn().mockResolvedValue(undefined),
       configurable: true,
       writable:     true,
     })
     render(<ResultPage session={makeCompletedSession()} onRestart={() => {}} />)
-    fireEvent.click(screen.getByRole('button', { name: '결과 공유해요' }))
+    fireEvent.click(screen.getByRole('button', { name: '공유하기' }))
     expect(await screen.findByText('공유했어요 ✓')).toBeInTheDocument()
   })
 
@@ -114,7 +161,7 @@ describe('ResultPage 2.0', () => {
       writable:     true,
     })
     render(<ResultPage session={makeCompletedSession()} onRestart={() => {}} />)
-    fireEvent.click(screen.getByRole('button', { name: '결과 공유해요' }))
-    expect(await screen.findByText('클립보드에 복사했어요 ✓')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '공유하기' }))
+    expect(await screen.findByText('복사했어요 ✓')).toBeInTheDocument()
   })
 })

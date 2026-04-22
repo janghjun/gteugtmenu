@@ -1,0 +1,145 @@
+/* ── 카드 컨테이너 ─────────────────────────────────────── */
+.sq-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 24px 20px;
+  box-sizing: border-box;
+  /* 캡처 시 폰트 렌더링 보정 */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── 배경 장식 SVG ─────────────────────────────────────── */
+.sq-card-deco {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── ① 브랜드 영역 ────────────────────────────────────── */
+.sq-card-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.sq-card-brand {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.sq-card-brand-sep {
+  font-size: 13px;
+  color: #8B95A1;
+}
+
+.sq-card-brand-sub {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4E5968;
+}
+
+/* ── ② 히어로 ─────────────────────────────────────────── */
+.sq-card-hero {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 0 8px;
+}
+
+.sq-card-emoji {
+  font-size: 52px;
+  line-height: 1;
+  display: block;
+}
+
+.sq-card-na {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4E5968;
+}
+
+.sq-card-result {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+/* ── ③ 푸터 ──────────────────────────────────────────── */
+.sq-card-footer {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sq-card-score-line {
+  margin: 0;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.sq-card-score-num {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.sq-card-score-denom {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4E5968;
+}
+
+.sq-card-score-suffix {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4E5968;
+  margin-left: 2px;
+}
+
+/* 점수 진행 바 */
+.sq-card-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.sq-card-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.3s ease;
+}
+
+/* CTA 문구 */
+.sq-card-cta {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #8B95A1;
+  letter-spacing: 0.01em;
+}

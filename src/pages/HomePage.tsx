@@ -78,99 +78,22 @@ export default function HomePage({ onStart, onStartDaily, onStartReview, onStart
   return (
     <main className="home-screen">
 
-      {/* ── 헤더 ────────────────────────────────────── */}
+      {/* ── 헤더: 브랜드 identity ───────────────────── */}
       <div className="home-header">
-        <h1 className="home-title">먹퀴즈</h1>
-        <span className="home-badge">
-          {activeSeasonMeta ? activeSeasonMeta.subtitle : (mockPack.meta?.subtitle ?? '2000 — 2020년대')}
-        </span>
+        <h1 className="home-title">
+          <picture>
+            <source srcSet="./assets/icons/icon-dark.png" media="(prefers-color-scheme: dark)" />
+            <img
+              src="./assets/icons/icon-light.png"
+              alt="먹퀴즈"
+              className="home-logo"
+            />
+          </picture>
+        </h1>
+        <p className="home-subtitle">유행 음식 맞히는 1분 퀴즈</p>
       </div>
 
-      {/* ── 내 현황 카드 ─────────────────────────────── */}
-      <div className="home-summary-card">
-        {hasRecord ? (
-          <>
-            <div className="home-summary-row">
-              <span className="home-summary-type">
-                {RESULT_TYPES[lastRecord!.resultType as keyof typeof RESULT_TYPES]?.label
-                  ?? lastRecord!.resultType}
-              </span>
-              <span className="home-summary-score">
-                {lastRecord!.correctCount}
-                <span className="home-summary-score-sep">/</span>
-                {lastRecord!.totalCount}
-              </span>
-            </div>
-            {stats.totalPlays >= 2 && (
-              <div className="home-stats">
-                <span className="home-stats-item">총 {stats.totalPlays}번 플레이</span>
-                {stats.bestScore !== null && (
-                  <span className="home-stats-item">
-                    최고 {Math.round(stats.bestScore * 100)}%
-                  </span>
-                )}
-                {stats.weakestCategory && (
-                  <span className="home-stats-item home-stats-item--weak">
-                    취약 {CATEGORY_LABEL[stats.weakestCategory] ?? stats.weakestCategory}
-                  </span>
-                )}
-              </div>
-            )}
-          </>
-        ) : (
-          <p className="home-summary-empty">첫 퀴즈를 시작해봐요</p>
-        )}
-      </div>
-
-      {/* ── 오늘의 트렌드 한 입 ─────────────────────── */}
-      {trendBite ? (
-        trendBiteActionable ? (
-          <button className="home-trend-card home-trend-card--action" onClick={handleTrendBiteAction}>
-            <div className="home-trend-header">
-              <span className="home-trend-eyebrow">오늘의 트렌드 한 입</span>
-              <span className="home-trend-arrow">›</span>
-            </div>
-            <p className="home-trend-title">{trendBite.title}</p>
-            <p className="home-trend-desc">{trendBite.description}</p>
-            <div className="home-trend-tags">
-              {trendBite.tags.map((tag) => (
-                <span key={tag} className="home-trend-tag">#{tag}</span>
-              ))}
-            </div>
-          </button>
-        ) : (
-          <div className="home-trend-card">
-            <div className="home-trend-header">
-              <span className="home-trend-eyebrow">오늘의 트렌드 한 입</span>
-            </div>
-            <p className="home-trend-title">{trendBite.title}</p>
-            <p className="home-trend-desc">{trendBite.description}</p>
-            <div className="home-trend-tags">
-              {trendBite.tags.map((tag) => (
-                <span key={tag} className="home-trend-tag">#{tag}</span>
-              ))}
-            </div>
-          </div>
-        )
-      ) : (
-        <div className="home-trend-card home-trend-card--empty">
-          <span className="home-trend-eyebrow">오늘의 트렌드 한 입</span>
-          <p className="home-trend-empty">오늘의 트렌드를 불러오지 못했어요</p>
-        </div>
-      )}
-
-      {/* ── 예시 문제 카드 ──────────────────────────── */}
-      <div className="home-example-card">
-        <span className="home-example-label">예시 문제</span>
-        <p className="home-example-prompt">{exampleQ.prompt}</p>
-        <div className="home-example-choices">
-          {exampleQ.choices.map((choice) => (
-            <span key={choice} className="home-example-choice">{choice}</span>
-          ))}
-        </div>
-      </div>
-
-      {/* ── 액션 그룹 ────────────────────────────────── */}
+      {/* ── 액션 그룹: 핵심 CTA — 스크롤 없이 바로 보임 ── */}
       <div className="home-action-group">
 
         {/* 오늘의 퀴즈 */}
@@ -213,6 +136,90 @@ export default function HomePage({ onStart, onStartDaily, onStartReview, onStart
           </button>
         )}
       </div>
+
+      {/* ── 내 현황 카드: 행동 결정 후 내 기록 확인 ── */}
+      <div className="home-summary-card">
+        {hasRecord ? (
+          <>
+            <div className="home-summary-row">
+              <span className="home-summary-type">
+                {RESULT_TYPES[lastRecord!.resultType as keyof typeof RESULT_TYPES]?.label
+                  ?? lastRecord!.resultType}
+              </span>
+              <span className="home-summary-score">
+                {lastRecord!.correctCount}
+                <span className="home-summary-score-sep">/</span>
+                {lastRecord!.totalCount}
+              </span>
+            </div>
+            {stats.totalPlays >= 2 && (
+              <div className="home-stats">
+                <span className="home-stats-item">총 {stats.totalPlays}번 플레이</span>
+                {stats.bestScore !== null && (
+                  <span className="home-stats-item">
+                    최고 {Math.round(stats.bestScore * 100)}%
+                  </span>
+                )}
+                {stats.weakestCategory && (
+                  <span className="home-stats-item home-stats-item--weak">
+                    취약 {CATEGORY_LABEL[stats.weakestCategory] ?? stats.weakestCategory}
+                  </span>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="home-summary-empty">첫 퀴즈를 시작해봐요</p>
+        )}
+      </div>
+
+      {/* ── 예시 문제 카드: 퀴즈 형태 이해 ──────────── */}
+      <div className="home-example-card">
+        <span className="home-example-label">예시 문제</span>
+        <p className="home-example-prompt">{exampleQ.prompt}</p>
+        <div className="home-example-choices">
+          {exampleQ.choices.map((choice) => (
+            <span key={choice} className="home-example-choice">{choice}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 오늘의 트렌드 한 입 ─────────────────────── */}
+      {trendBite ? (
+        trendBiteActionable ? (
+          <button className="home-trend-card home-trend-card--action" onClick={handleTrendBiteAction}>
+            <div className="home-trend-header">
+              <span className="home-trend-eyebrow">오늘의 트렌드 한 입</span>
+              <span className="home-trend-arrow">›</span>
+            </div>
+            <p className="home-trend-title">{trendBite.title}</p>
+            <p className="home-trend-desc">{trendBite.description}</p>
+            <div className="home-trend-tags">
+              {trendBite.tags.map((tag) => (
+                <span key={tag} className="home-trend-tag">#{tag}</span>
+              ))}
+            </div>
+          </button>
+        ) : (
+          <div className="home-trend-card">
+            <div className="home-trend-header">
+              <span className="home-trend-eyebrow">오늘의 트렌드 한 입</span>
+            </div>
+            <p className="home-trend-title">{trendBite.title}</p>
+            <p className="home-trend-desc">{trendBite.description}</p>
+            <div className="home-trend-tags">
+              {trendBite.tags.map((tag) => (
+                <span key={tag} className="home-trend-tag">#{tag}</span>
+              ))}
+            </div>
+          </div>
+        )
+      ) : (
+        <div className="home-trend-card home-trend-card--empty">
+          <span className="home-trend-eyebrow">오늘의 트렌드 한 입</span>
+          <p className="home-trend-empty">오늘의 트렌드를 불러오지 못했어요</p>
+        </div>
+      )}
 
       {/* ── Seasonal Hub ─────────────────────────────── */}
       {onStartSeasonal && (

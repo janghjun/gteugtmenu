@@ -85,6 +85,7 @@ export default function App() {
     return (
       <QuizPage
         onFinish={handleFinish}
+        onExit={handleRestart}
         initialSession={pendingSession ?? undefined}
         quizLabel={quizLabel}
       />

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { buildShareText, shareResult } from './shareCard'
+import { buildShareText, shareResult, shareStoryCard } from './shareCard'
 import type { ShareCardData } from './shareCard'
 
 // ── 픽스처 ───────────────────────────────────────────────────────
@@ -147,5 +147,69 @@ describe('shareResult', () => {
     })
     const result = await shareResult(makeData())
     expect(result).toBe('unavailable')
+  })
+})
+
+// ── shareStoryCard ────────────────────────────────────────────────
+
+describe('shareStoryCard', () => {
+  afterEach(() => {
+    Object.defineProperty(navigator, 'share', {
+      value:        undefined,
+      configurable: true,
+      writable:     true,
+    })
+    Object.defineProperty(navigator, 'clipboard', {
+      value:        { writeText: vi.fn().mockResolvedValue(undefined) },
+      configurable: true,
+      writable:     true,
+    })
+  })
+
+  it('Web Share API 사용 가능 시 shared를 반환한다', async () => {
+    Object.defineProperty(navigator, 'share', {
+      value:        vi.fn().mockResolvedValue(undefined),
+      configurable: true,
+      writable:     true,
+    })
+    expect(await shareStoryCard(makeData())).toBe('shared')
+  })
+
+  it('Web Share API 없을 때 clipboard fallback으로 copied를 반환한다', async () => {
+    Object.defineProperty(navigator, 'share', {
+      value:        undefined,
+      configurable: true,
+      writable:     true,
+    })
+    Object.defineProperty(navigator, 'clipboard', {
+      value:        { writeText: vi.fn().mockResolvedValue(undefined) },
+      configurable: true,
+      writable:     true,
+    })
+    expect(await shareStoryCard(makeData())).toBe('copied')
+  })
+
+  it('share도 clipboard도 불가 시 unavailable을 반환한다', async () => {
+    Object.defineProperty(navigator, 'share', {
+      value:        undefined,
+      configurable: true,
+      writable:     true,
+    })
+    Object.defineProperty(navigator, 'clipboard', {
+      value:        { writeText: vi.fn().mockRejectedValue(new Error('denied')) },
+      configurable: true,
+      writable:     true,
+    })
+    expect(await shareStoryCard(makeData())).toBe('unavailable')
+  })
+
+  it('cardEl 인수를 받아도 동일하게 동작한다 (미래 확장 자리)', async () => {
+    Object.defineProperty(navigator, 'share', {
+      value:        vi.fn().mockResolvedValue(undefined),
+      configurable: true,
+      writable:     true,
+    })
+    const fakeEl = document.createElement('div')
+    expect(await shareStoryCard(makeData(), fakeEl)).toBe('shared')
   })
 })

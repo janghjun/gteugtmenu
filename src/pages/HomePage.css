@@ -17,29 +17,30 @@
 /* ── 헤더 ────────────────────────────────────────────── */
 .home-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   margin-bottom: 4px;
 }
 
 .home-title {
-  font-size: 26px;
-  font-weight: 800;
-  color: #191F28;
-  letter-spacing: -0.01em;
   margin: 0;
+  line-height: 1;
 }
 
-.home-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  border-radius: 100px;
-  background: #EFF6FF;
-  color: #3182F6;
-  font-size: 12px;
+.home-logo {
+  height: 56px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.home-subtitle {
+  margin: 0;
+  font-size: 13px;
   font-weight: 600;
-  white-space: nowrap;
+  color: #8B95A1;
+  letter-spacing: -0.01em;
 }
 
 /* ── 내 현황 카드 ─────────────────────────────────────── */

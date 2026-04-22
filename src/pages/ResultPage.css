@@ -227,19 +227,85 @@
   border-radius: 12px;
 }
 
-/* ── 공유 버튼 ──────────────────────────── */
+/* ── 공유 카드 섹션 ─────────────────────── */
 
 .result-share-section {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 포맷 선택 행 */
+.result-share-format-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.result-share-format-tabs {
+  display: flex;
+  gap: 4px;
+  background: #F2F4F6;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.result-share-format-tab {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8B95A1;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+
+.result-share-format-tab--active {
+  background: #fff;
+  color: #191F28;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 카드 미리보기 영역 — 캡처 범위 */
+.result-share-card-wrap {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+/* 스토리 포맷 — 더 좁게 해서 9:16 비율이 화면에 맞게 보임 */
+.result-share-card-wrap--story {
+  max-width: 200px;
+}
+
+/* 저장 방법 안내 토스트 */
+.result-share-hint {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3182F6;
+  text-align: center;
+  padding: 10px 14px;
+  background: #EFF6FF;
+  border-radius: 10px;
+}
+
+/* 공유 버튼 2개 — 나란히 (저장 primary + 공유 secondary) */
+.result-share-btns {
+  display: flex;
+  gap: 8px;
 }
 
 .result-share-btn {
-  width: 100%;
-  padding: 13px 16px;
+  flex: 1;
+  padding: 13px 12px;
   background: transparent;
   border: 1.5px solid #E5E8EB;
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #4E5968;
   cursor: pointer;
@@ -247,17 +313,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
 }
 
 .result-share-btn:active {
   background: #F2F4F6;
 }
 
-.result-share-btn--fail {
+/* Primary — 카드 저장 */
+.result-share-btn--primary {
+  background: #191F28;
+  border-color: #191F28;
+  color: #fff;
+}
+
+.result-share-btn--primary:active {
+  background: #2C3A4B;
+  border-color: #2C3A4B;
+}
+
+/* Muted — 공유 불가 */
+.result-share-btn--muted {
   border-color: #E5E8EB;
-  color: #8B95A1;
+  color: #B0B8C1;
   cursor: default;
 }
 

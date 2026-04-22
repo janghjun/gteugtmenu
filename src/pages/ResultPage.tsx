@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect, useState, useRef } from 'react'
 import { buildQuizResult } from '../features/result'
 import type { CategoryStat, QuizResult } from '../features/result'
 import type { QuizSession } from '../features/quiz'
@@ -7,8 +7,10 @@ import { mockPack } from '../features/content'
 import { loadUserQuizState, saveUserQuizState, applySessionResult } from '../features/state/userQuizState'
 import { getWrongNoteQuestions, createWrongNoteSession } from '../features/review/reviewSelectors'
 import { tryRequestReview } from '../features/review/reviewPrompt'
-import { shareResult } from '../features/share/shareCard'
-import type { ShareOutcome } from '../features/share/shareCard'
+import { shareResult, captureShareCard } from '../features/share/shareCard'
+import type { ShareOutcome, CaptureOutcome } from '../features/share/shareCard'
+import ResultSquareShareCard from '../features/share/ResultSquareShareCard'
+import StoryShareCard from '../features/share/StoryShareCard'
 import './ResultPage.css'
 
 interface Props {
@@ -45,13 +47,16 @@ function safeCalc(session: QuizSession): QuizResult | null {
 
 export default function ResultPage({ session, onRestart, onStartReview }: Props) {
   const result = useMemo(() => safeCalc(session), [session])
-  const [reviewOpen, setReviewOpen] = useState(false)
-  const [shareOutcome, setShareOutcome] = useState<ShareOutcome | null>(null)
+  const [reviewOpen,     setReviewOpen]     = useState(false)
+  const [shareOutcome,   setShareOutcome]   = useState<ShareOutcome | null>(null)
+  const [captureOutcome, setCaptureOutcome] = useState<CaptureOutcome | null>(null)
+  const [cardFormat, setCardFormat] = useState<'square' | 'story'>('square')
+  const cardRef = useRef<HTMLDivElement>(null)
 
   // ── 상태 저장 ─────────────────────────────────────────────
-  // useMemo로 동기 계산 → 첫 렌더부터 올바른 wrong-note count 제공
+  // completedAt 없는 세션(중간 이탈)은 null 반환 — applySessionResult 호출 자체를 막음
   const newState = useMemo(() => {
-    if (!result) return null
+    if (!result || !session.completedAt) return null
     const current = loadUserQuizState()
     return applySessionResult(current, session, result, session.packId ?? mockPack.packId)
   }, [result, session])
@@ -93,7 +98,8 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
   const weakCat   = activeCats.length > 1 ? activeCats[activeCats.length - 1] : null
   const showWeak  = weakCat !== null && weakCat[1].rate < (strongCat?.[1].rate ?? 1)
 
-  const recommendText = weakCat
+  // showWeak일 때만 카테고리별 추천, 나머지는 범용 fallback
+  const recommendText = (showWeak && weakCat)
     ? (RECOMMEND_TEXT[weakCat[0]] ?? FALLBACK_RECOMMEND)
     : FALLBACK_RECOMMEND
 
@@ -107,10 +113,16 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
 
   const canReview = onStartReview !== undefined && wrongNoteQuestions.length > 0
 
+  const handleSaveCard = async () => {
+    const outcome = await captureShareCard(cardRef.current)
+    setCaptureOutcome(outcome)
+    if (outcome !== 'manual') setTimeout(() => setCaptureOutcome(null), 2200)
+  }
+
   const handleShare = async () => {
     const outcome = await shareResult({
-      resultTypeLabel: result.resultType.label,
-      resultTypeId:    result.resultType.id,
+      resultTypeLabel: resultType.label,
+      resultTypeId:    resultType.id,
       correctCount:    score.correct,
       totalCount:      score.total,
     })
@@ -129,6 +141,7 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
 
   return (
     <main className="result-screen">
+
       {/* ① 결과 타입 + 해석 + 점수 */}
       <div className="result-type-card">
         <span className="result-type-name">{resultType.label}</span>
@@ -177,7 +190,50 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
         </div>
       )}
 
-      {/* ③ 오답 미리보기 — 이번 세션 기준 */}
+      {/* ③ CTA 그룹 — 1순위/2순위 (공유 위에 배치) */}
+      <div className="result-cta-group">
+        {canReview ? (
+          <>
+            {/* 오답 있을 때: 복습 우선 */}
+            <button
+              className="result-cta-btn result-cta-btn--review"
+              onClick={handleStartReview}
+            >
+              틀린 문제 다시 풀래요
+            </button>
+            <button
+              className="result-cta-btn result-cta-btn--secondary"
+              onClick={() => {
+                logEvent(EVENTS.RESULT_RETRY_CLICKED)
+                onRestart()
+              }}
+            >
+              다시 해봐요
+            </button>
+          </>
+        ) : (
+          <>
+            {/* 오답 없을 때: 재도전 우선 */}
+            <button
+              className="result-cta-btn"
+              onClick={() => {
+                logEvent(EVENTS.RESULT_RETRY_CLICKED)
+                onRestart()
+              }}
+            >
+              다시 해봐요
+            </button>
+            <button
+              className="result-cta-btn result-cta-btn--secondary"
+              onClick={onRestart}
+            >
+              {recommendText}
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* ④ 오답 미리보기 — 이번 세션 기준 (접이식 상세) */}
       <div className="result-review-section">
         {wrongPreview.length > 0 ? (
           <>
@@ -205,62 +261,77 @@ export default function ResultPage({ session, onRestart, onStartReview }: Props)
         )}
       </div>
 
-      {/* ④ 공유 */}
+      {/* ⑤ 공유 카드 — 3순위, 보조 행동 */}
       <div className="result-share-section">
-        <button
-          className={`result-share-btn${shareOutcome === 'unavailable' ? ' result-share-btn--fail' : ''}`}
-          onClick={handleShare}
-        >
-          {shareOutcome === 'copied'
-            ? '클립보드에 복사했어요 ✓'
-            : shareOutcome === 'shared'
-            ? '공유했어요 ✓'
-            : shareOutcome === 'unavailable'
-            ? '공유를 지원하지 않는 환경이에요'
-            : '결과 공유해요'}
-        </button>
+        <div className="result-share-format-row">
+          <p className="result-section-label">결과 카드</p>
+          <div className="result-share-format-tabs">
+            <button
+              className={`result-share-format-tab${cardFormat === 'square' ? ' result-share-format-tab--active' : ''}`}
+              onClick={() => setCardFormat('square')}
+            >
+              정방형
+            </button>
+            <button
+              className={`result-share-format-tab${cardFormat === 'story' ? ' result-share-format-tab--active' : ''}`}
+              onClick={() => setCardFormat('story')}
+            >
+              스토리
+            </button>
+          </div>
+        </div>
+
+        {/* 시각적 공유 카드 */}
+        <div className={`result-share-card-wrap${cardFormat === 'story' ? ' result-share-card-wrap--story' : ''}`}>
+          {cardFormat === 'square' ? (
+            <ResultSquareShareCard
+              ref={cardRef}
+              resultTypeLabel={resultType.label}
+              resultTypeId={resultType.id}
+              correctCount={score.correct}
+              totalCount={score.total}
+            />
+          ) : (
+            <StoryShareCard
+              ref={cardRef}
+              resultTypeLabel={resultType.label}
+              resultTypeId={resultType.id}
+              correctCount={score.correct}
+              totalCount={score.total}
+            />
+          )}
+        </div>
+
+        {/* 저장 안내 토스트 */}
+        {captureOutcome === 'manual' && (
+          <p className="result-share-hint">
+            화면을 길게 눌러 이미지로 저장해주세요
+          </p>
+        )}
+
+        {/* 공유 버튼 2개 — 저장(primary) + 공유(secondary) */}
+        <div className="result-share-btns">
+          <button
+            className="result-share-btn result-share-btn--primary"
+            onClick={handleSaveCard}
+          >
+            {captureOutcome === 'manual' ? '저장 안내 확인' : '카드 저장하기'}
+          </button>
+          <button
+            className={`result-share-btn${shareOutcome === 'unavailable' ? ' result-share-btn--muted' : ''}`}
+            onClick={handleShare}
+          >
+            {shareOutcome === 'shared'
+              ? '공유했어요 ✓'
+              : shareOutcome === 'copied'
+              ? '복사했어요 ✓'
+              : shareOutcome === 'unavailable'
+              ? '공유를 지원하지 않아요'
+              : '공유하기'}
+          </button>
+        </div>
       </div>
 
-      {/* ⑤ CTA — 오답 노트 기준 */}
-      <div className="result-cta-group">
-        {canReview ? (
-          <>
-            <button
-              className="result-cta-btn result-cta-btn--review"
-              onClick={handleStartReview}
-            >
-              틀린 문제 다시 풀래요
-            </button>
-            <button
-              className="result-cta-btn result-cta-btn--secondary"
-              onClick={() => {
-                logEvent(EVENTS.RESULT_RETRY_CLICKED)
-                onRestart()
-              }}
-            >
-              처음부터 다시 해봐요
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              className="result-cta-btn"
-              onClick={() => {
-                logEvent(EVENTS.RESULT_RETRY_CLICKED)
-                onRestart()
-              }}
-            >
-              다시 해봐요
-            </button>
-            <button
-              className="result-cta-btn result-cta-btn--secondary"
-              onClick={onRestart}
-            >
-              {recommendText}
-            </button>
-          </>
-        )}
-      </div>
     </main>
   )
 }

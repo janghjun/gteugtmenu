@@ -47,7 +47,6 @@ export type ShareOutcome = 'shared' | 'copied' | 'unavailable'
 
 /**
  * Web Share API → clipboard → unavailable 순서로 시도합니다.
- * 이미지 카드 URL이 제공되면 Web Share API에 files로 포함할 준비가 되어 있습니다(future).
  */
 export async function shareResult(data: ShareCardData): Promise<ShareOutcome> {
   const text = buildShareText(data)
@@ -71,4 +70,33 @@ export async function shareResult(data: ShareCardData): Promise<ShareOutcome> {
   }
 
   return 'unavailable'
+}
+
+// ── 카드 이미지 캡처 ─────────────────────────────────────────────
+
+export type CaptureOutcome = 'downloaded' | 'manual'
+
+/**
+ * 카드 DOM 요소를 이미지로 캡처해 저장합니다.
+ * 현재: 스크린샷 안내(manual)를 반환하는 stub.
+ * TODO: html2canvas(_cardEl, { scale: 2 }) → blob → <a> download
+ */
+export async function captureShareCard(
+  _cardEl: HTMLElement | null,
+): Promise<CaptureOutcome> {
+  return 'manual'
+}
+
+// ── 스토리 카드 공유 ─────────────────────────────────────────────
+
+/**
+ * 스토리 카드를 공유합니다.
+ * 현재: shareResult()와 동일하게 텍스트를 Web Share API → 클립보드 순서로 공유.
+ * TODO: html2canvas(cardEl) → File blob → navigator.share({ files: [blob] })
+ */
+export async function shareStoryCard(
+  data: ShareCardData,
+  _cardEl: HTMLElement | null = null,
+): Promise<ShareOutcome> {
+  return shareResult(data)
 }

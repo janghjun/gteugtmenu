@@ -94,9 +94,13 @@ function genSessionId(): string {
 
 // ── 핵심 reducer ─────────────────────────────────────────────────
 
+// 이탈 정책: completedAt이 없는 세션은 history/latestScore/progressByQuestionId를 갱신하지 않는다.
+// wrong-only / daily / seasonal / category 모드 모두 동일 규칙.
+
 /**
  * 완료된 세션과 결과를 받아 UserQuizState를 갱신 (순수 함수).
  * side effect 없음 — 호출 측에서 saveUserQuizState()로 저장.
+ * @throws 세션이 완료되지 않은 경우 (completedAt === null)
  */
 export function applySessionResult(
   current: UserQuizState,
@@ -104,6 +108,10 @@ export function applySessionResult(
   result: QuizResult,
   packId: string,
 ): UserQuizState {
+  if (!session.completedAt) {
+    throw new Error('applySessionResult: 미완료 세션 — completedAt이 없습니다')
+  }
+
   const sessionId  = genSessionId()
   const playedAt   = new Date().toISOString()
   const sessionType: SessionType = session.sessionType ?? 'normal'

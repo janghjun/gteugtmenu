@@ -15,6 +15,7 @@ import './QuizPage.css'
 
 interface Props {
   onFinish: (session: QuizSession) => void
+  onExit?: () => void
   initialSession?: QuizSession
   quizLabel?: string  // "오답 복습" | "오늘의 퀴즈" 등
 }
@@ -87,10 +88,11 @@ function QuizImageBlock({
   )
 }
 
-export default function QuizPage({ onFinish, initialSession, quizLabel }: Props) {
+export default function QuizPage({ onFinish, onExit, initialSession, quizLabel }: Props) {
   const [status, setStatus] = useState<Status>('loading')
   const [session, setSession] = useState<QuizSession | null>(null)
   const [loadKey, setLoadKey] = useState(0)
+  const [showExitModal, setShowExitModal] = useState(false)
   const feedbackRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -114,9 +116,24 @@ export default function QuizPage({ onFinish, initialSession, quizLabel }: Props)
 
   useEffect(() => {
     if (isAnswered) {
-      feedbackRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      feedbackRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' })
     }
   }, [isAnswered])
+
+  const handleExitRequest = () => {
+    if (!onExit) return
+    const hasProgress = session ? Object.keys(session.answers).length > 0 : false
+    if (hasProgress) {
+      setShowExitModal(true)
+    } else {
+      onExit()
+    }
+  }
+
+  const handleExitConfirm = () => {
+    setShowExitModal(false)
+    onExit?.()
+  }
 
   if (status === 'loading') {
     return (
@@ -164,74 +181,123 @@ export default function QuizPage({ onFinish, initialSession, quizLabel }: Props)
   }
 
   return (
-    <main className="quiz-screen">
-      {/* 세션 라벨 (오늘의 퀴즈 / 오답 복습) */}
-      {quizLabel && (
-        <span className="quiz-review-label">{quizLabel}</span>
-      )}
-
-      {/* 진행률 */}
-      <div className="quiz-progress">
-        <div className="quiz-progress-bar">
-          <div
-            className="quiz-progress-fill"
-            style={{ width: `${((session.currentIndex + 1) / session.questions.length) * 100}%` }}
-          />
-        </div>
-        <span className="quiz-progress-label">
-          {session.currentIndex + 1} / {session.questions.length}
-        </span>
-      </div>
-
-      {/* 문제 타입 배지 */}
-      <span className="quiz-format-badge">{FORMAT_LABEL[question.format]}</span>
-
-      {/* 이미지 (image_to_year) — 에셋 없으면 placeholder 카드 표시 */}
-      {question.format === 'image_to_year' && (
-        <QuizImageBlock
-          key={question.id}
-          questionId={question.id}
-          visualAssetKey={(question as ImageToYearQuestion).visualAssetKey}
-          category={question.category}
-        />
-      )}
-
-      {/* 문제 */}
-      <p className="quiz-prompt">{question.prompt}</p>
-
-      {/* 보기 */}
-      <div className={isOx ? 'quiz-choices--ox' : 'quiz-choices'}>
-        {choices.map((choice) => {
-          const variant = resolveVariant(choice, submitted, question.answer, correct)
-          return (
-            <button
-              key={choice}
-              className={`quiz-choice quiz-choice--${variant}${isOx ? ' quiz-choice--ox-item' : ''}`}
-              onClick={() => handleChoice(choice)}
-              disabled={isAnswered}
-            >
-              {choice}
+    <>
+      <main className="quiz-screen">
+        {/* 상단 내비게이션 */}
+        {onExit && (
+          <div className="quiz-nav">
+            <button className="quiz-nav-btn" onClick={handleExitRequest} aria-label="뒤로가기">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
-          )
-        })}
-      </div>
+            <button className="quiz-nav-btn" onClick={handleExitRequest} aria-label="홈으로">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M9 21V12h6v9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+        )}
 
-      {/* 피드백 카드 */}
-      {isAnswered && (
-        <div ref={feedbackRef} className={`quiz-feedback quiz-feedback--${correct ? 'correct' : 'wrong'}`}>
-          <span className="quiz-feedback-title">
-            {correct ? '정답이에요!' : `아쉬워요 · 정답은 "${question.answer}"`}
+        {/* 세션 라벨 (오늘의 퀴즈 / 오답 복습) */}
+        {quizLabel && (
+          <span className="quiz-review-label">{quizLabel}</span>
+        )}
+
+        {/* 진행률 */}
+        <div className="quiz-progress">
+          <div className="quiz-progress-bar">
+            <div
+              className="quiz-progress-fill"
+              style={{ width: `${((session.currentIndex + 1) / session.questions.length) * 100}%` }}
+            />
+          </div>
+          <span className="quiz-progress-label">
+            {session.currentIndex + 1} / {session.questions.length}
           </span>
-          <p className="quiz-feedback-explanation">{question.explanation}</p>
+        </div>
+
+        {/* 문제 타입 배지 */}
+        <span className="quiz-format-badge">{FORMAT_LABEL[question.format]}</span>
+
+        {/* 이미지 (image_to_year) — 에셋 없으면 placeholder 카드 표시 */}
+        {question.format === 'image_to_year' && (
+          <QuizImageBlock
+            key={question.id}
+            questionId={question.id}
+            visualAssetKey={(question as ImageToYearQuestion).visualAssetKey}
+            category={question.category}
+          />
+        )}
+
+        {/* 문제 */}
+        <p className="quiz-prompt">{question.prompt}</p>
+
+        {/* 보기 */}
+        <div className={isOx ? 'quiz-choices--ox' : 'quiz-choices'}>
+          {choices.map((choice) => {
+            const variant = resolveVariant(choice, submitted, question.answer, correct)
+            return (
+              <button
+                key={choice}
+                className={`quiz-choice quiz-choice--${variant}${isOx ? ' quiz-choice--ox-item' : ''}`}
+                onClick={() => handleChoice(choice)}
+                disabled={isAnswered}
+              >
+                {choice}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* 피드백 카드 */}
+        {isAnswered && (
+          <div ref={feedbackRef} className={`quiz-feedback quiz-feedback--${correct ? 'correct' : 'wrong'}`}>
+            <span className="quiz-feedback-title">
+              {correct ? '정답이에요!' : `아쉬워요 · 정답은 "${question.answer}"`}
+            </span>
+            <p className="quiz-feedback-explanation">{question.explanation}</p>
+          </div>
+        )}
+
+        {/* 다음 문제 — 답변 후에만 표시 */}
+        {isAnswered && (
+          <button className="quiz-cta-btn" onClick={handleNext}>
+            {isLast ? '결과 보기' : '다음 문제'}
+          </button>
+        )}
+      </main>
+
+      {/* 이탈 확인 모달 */}
+      {showExitModal && (
+        <div
+          className="quiz-exit-overlay"
+          onClick={() => setShowExitModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="exit-modal-title"
+        >
+          <div className="quiz-exit-modal" onClick={(e) => e.stopPropagation()}>
+            <p id="exit-modal-title" className="quiz-exit-modal-title">퀴즈를 그만둘까요?</p>
+            <p className="quiz-exit-modal-desc">지금 나가면 이번 진행 기록은 저장되지 않을 수 있어요</p>
+            <div className="quiz-exit-modal-actions">
+              <button
+                className="quiz-exit-btn quiz-exit-btn--cancel"
+                onClick={() => setShowExitModal(false)}
+              >
+                닫기
+              </button>
+              <button
+                className="quiz-exit-btn quiz-exit-btn--confirm"
+                onClick={handleExitConfirm}
+              >
+                나갈게요
+              </button>
+            </div>
+          </div>
         </div>
       )}
-
-      {/* 다음 문제 — 답변 후에만 표시 */}
-      {isAnswered && (
-        <button className="quiz-cta-btn" onClick={handleNext}>
-          {isLast ? '결과 보기' : '다음 문제'}
-        </button>
-      )}
-    </main>
+    </>
   )
 }

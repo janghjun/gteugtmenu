@@ -1,3 +1,96 @@
+/* ── 상단 내비게이션 ─────────────────────── */
+
+.quiz-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  margin-left: -8px;
+  width: calc(100% + 16px);
+}
+
+.quiz-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 50%;
+  color: #4E5968;
+  transition: background 0.1s;
+}
+
+.quiz-nav-btn:active {
+  background: #F2F4F6;
+}
+
+/* ── 이탈 확인 모달 ───────────────────────── */
+
+.quiz-exit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+}
+
+.quiz-exit-modal {
+  width: 100%;
+  max-width: 440px;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 28px 24px calc(32px + env(safe-area-inset-bottom, 0px));
+}
+
+.quiz-exit-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #191F28;
+  margin-bottom: 8px;
+}
+
+.quiz-exit-modal-desc {
+  font-size: 14px;
+  color: #6B7684;
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+
+.quiz-exit-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.quiz-exit-btn {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.quiz-exit-btn--cancel {
+  background: #F2F4F6;
+  color: #4E5968;
+}
+
+.quiz-exit-btn--confirm {
+  background: #3182F6;
+  color: #fff;
+}
+
+.quiz-exit-btn--cancel:active  { background: #E5E8EB; }
+.quiz-exit-btn--confirm:active { background: #1B64DA; }
+
 /* ── 오답 복습 라벨 ──────────────────────── */
 
 .quiz-review-label {
