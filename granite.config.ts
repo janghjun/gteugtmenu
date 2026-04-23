@@ -13,8 +13,8 @@
 
 const config = {
   app: {
-    /** 앱 식별자 — AIT 콘솔에 등록한 appId와 일치해야 함 */
-    appId: 'foodquiz',
+    /** 앱 식별자 — AIT 콘솔에 등록한 appName과 일치해야 함 */
+    appId: 'food-time-quiz',
 
     /** 토스앱 미니앱 목록에 표시될 이름 */
     name: '먹퀴즈',
