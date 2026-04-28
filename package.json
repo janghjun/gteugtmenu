@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "package": "npm run build && cd dist && zip -r ../foodquiz.ait . && cd ..",
+    "ait:build": "ait build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -17,6 +17,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@apps-in-toss/web-framework": "^2.4.7",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^18.3.1",
