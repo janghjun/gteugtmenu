@@ -19,14 +19,14 @@
 
 .result-status-text {
   font-size: 16px;
-  color: #333D4B;
+  color: var(--c-text-2);
 }
 
 /* ── 결과 타입 카드 ───────────────────────── */
 
 .result-type-card {
   width: 100%;
-  background: linear-gradient(145deg, #EFF6FF 0%, #F0FDF4 100%);
+  background: var(--c-result-bg);
   border-radius: 20px;
   padding: 28px 24px 22px;
 }
@@ -35,14 +35,14 @@
   display: block;
   font-size: 26px;
   font-weight: 800;
-  color: #191F28;
+  color: var(--c-text-1);
   letter-spacing: -0.02em;
   margin-bottom: 8px;
 }
 
 .result-type-desc {
   font-size: 15px;
-  color: #333D4B;
+  color: var(--c-text-2);
   line-height: 1.65;
   margin-bottom: 20px;
 }
@@ -58,7 +58,7 @@
 .result-score-bar {
   flex: 1;
   height: 6px;
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--c-bar-bg);
   border-radius: 100px;
   overflow: hidden;
 }
@@ -73,13 +73,13 @@
 .result-score-badge {
   font-size: 15px;
   font-weight: 700;
-  color: #191F28;
+  color: var(--c-text-1);
   white-space: nowrap;
 }
 
 .result-score-sep {
   font-weight: 400;
-  color: #8B95A1;
+  color: var(--c-text-4);
   margin: 0 1px;
 }
 
@@ -88,7 +88,7 @@
 .result-section-label {
   font-size: 12px;
   font-weight: 700;
-  color: #8B95A1;
+  color: var(--c-text-4);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -106,7 +106,7 @@
   align-items: center;
   gap: 10px;
   padding: 13px 0;
-  border-bottom: 1px solid #F2F4F6;
+  border-bottom: 1px solid var(--c-divider);
 }
 
 .result-category-row:last-child {
@@ -124,25 +124,25 @@
 }
 
 .result-category-tag--strong {
-  background: #F0FDF4;
+  background: var(--c-correct-bg);
   color: #00A35A;
 }
 
 .result-category-tag--weak {
-  background: #FFF5F5;
+  background: var(--c-wrong-bg);
   color: #E03131;
 }
 
 .result-category-name {
   font-size: 15px;
-  color: #191F28;
+  color: var(--c-text-1);
   flex: 1;
 }
 
 .result-category-rate {
   font-size: 15px;
   font-weight: 600;
-  color: #4E5968;
+  color: var(--c-text-3);
 }
 
 /* ── 오답 복습 ───────────────────────────── */
@@ -153,26 +153,26 @@
   align-items: center;
   gap: 8px;
   padding: 14px 16px;
-  background: #F8F9FA;
+  background: var(--c-chip);
   border: none;
   border-radius: 12px;
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
-  color: #191F28;
+  color: var(--c-text-1);
   font-family: inherit;
   text-align: left;
 }
 
 .result-review-toggle:active {
-  background: #F2F4F6;
+  background: var(--c-chip-active);
 }
 
 .result-review-count {
   font-size: 13px;
   font-weight: 700;
   color: #E03131;
-  background: #FFF5F5;
+  background: var(--c-wrong-bg);
   padding: 2px 8px;
   border-radius: 100px;
 }
@@ -180,7 +180,7 @@
 .result-review-chevron {
   margin-left: auto;
   font-size: 18px;
-  color: #8B95A1;
+  color: var(--c-text-4);
   transition: transform 0.2s ease;
   display: inline-block;
 }
@@ -193,12 +193,13 @@
   margin-top: 8px;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #F2F4F6;
+  border: 1px solid var(--c-border);
 }
 
 .result-review-item {
   padding: 14px 16px;
-  border-bottom: 1px solid #F2F4F6;
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-surface);
 }
 
 .result-review-item:last-child {
@@ -207,7 +208,7 @@
 
 .result-review-prompt {
   font-size: 14px;
-  color: #333D4B;
+  color: var(--c-text-2);
   line-height: 1.55;
   margin-bottom: 5px;
 }
@@ -223,7 +224,7 @@
   font-weight: 600;
   color: #00A35A;
   padding: 14px 16px;
-  background: #F0FDF4;
+  background: var(--c-correct-bg);
   border-radius: 12px;
 }
 
@@ -246,7 +247,7 @@
 .result-share-format-tabs {
   display: flex;
   gap: 4px;
-  background: #F2F4F6;
+  background: var(--c-chip);
   border-radius: 8px;
   padding: 3px;
 }
@@ -258,15 +259,15 @@
   background: transparent;
   font-size: 12px;
   font-weight: 600;
-  color: #8B95A1;
+  color: var(--c-text-4);
   cursor: pointer;
   font-family: inherit;
   transition: background 0.15s, color 0.15s;
 }
 
 .result-share-format-tab--active {
-  background: #fff;
-  color: #191F28;
+  background: var(--c-surface);
+  color: var(--c-text-1);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -277,20 +278,25 @@
   margin: 0 auto;
 }
 
-/* 스토리 포맷 — 더 좁게 해서 9:16 비율이 화면에 맞게 보임 */
+/* 스토리 포맷 — 9:16 비율, 230px 이상 필요 (200px에서 히어로 콘텐츠 overflow 발생) */
 .result-share-card-wrap--story {
-  max-width: 200px;
+  max-width: 230px;
 }
 
-/* 저장 방법 안내 토스트 */
+/* 안내 토스트 */
 .result-share-hint {
   font-size: 13px;
   font-weight: 600;
   color: #3182F6;
   text-align: center;
   padding: 10px 14px;
-  background: #EFF6FF;
+  background: var(--c-hint-bg);
   border-radius: 10px;
+}
+
+.result-share-hint--warning {
+  color: #E03131;
+  background: var(--c-wrong-bg);
 }
 
 /* 공유 버튼 2개 — 나란히 (저장 primary + 공유 secondary) */
@@ -303,11 +309,11 @@
   flex: 1;
   padding: 13px 12px;
   background: transparent;
-  border: 1.5px solid #E5E8EB;
+  border: 1.5px solid var(--c-border);
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
-  color: #4E5968;
+  color: var(--c-text-3);
   cursor: pointer;
   font-family: inherit;
   display: flex;
@@ -318,25 +324,24 @@
 }
 
 .result-share-btn:active {
-  background: #F2F4F6;
+  background: var(--c-chip);
 }
 
 /* Primary — 카드 저장 */
 .result-share-btn--primary {
-  background: #191F28;
-  border-color: #191F28;
-  color: #fff;
+  background: var(--c-text-1);
+  border-color: var(--c-text-1);
+  color: var(--c-bg);
 }
 
 .result-share-btn--primary:active {
-  background: #2C3A4B;
-  border-color: #2C3A4B;
+  opacity: 0.85;
 }
 
 /* Muted — 공유 불가 */
 .result-share-btn--muted {
-  border-color: #E5E8EB;
-  color: #B0B8C1;
+  border-color: var(--c-border);
+  color: var(--c-text-4);
   cursor: default;
 }
 
@@ -363,14 +368,8 @@
 }
 
 .result-share-spinner--dark {
-  border-color: rgba(0, 0, 0, 0.15);
-  border-top-color: #4E5968;
-}
-
-/* Warning hint */
-.result-share-hint--warning {
-  color: #E03131;
-  background: #FFF5F5;
+  border-color: var(--c-bar-bg);
+  border-top-color: var(--c-text-3);
 }
 
 /* ── CTA 영역 ────────────────────────────── */
@@ -386,8 +385,8 @@
 .result-cta-btn {
   width: 100%;
   padding: 16px;
-  background: #191F28;
-  color: #fff;
+  background: var(--c-text-1);
+  color: var(--c-bg);
   border: none;
   border-radius: 12px;
   font-size: 17px;
@@ -397,23 +396,24 @@
 }
 
 .result-cta-btn:active {
-  background: #2C3A4B;
+  opacity: 0.85;
 }
 
 .result-cta-btn--secondary {
   background: transparent;
-  color: #4E5968;
-  border: 1.5px solid #E5E8EB;
+  color: var(--c-text-3);
+  border: 1.5px solid var(--c-border);
   font-size: 15px;
   font-weight: 600;
 }
 
 .result-cta-btn--secondary:active {
-  background: #F8F9FA;
+  background: var(--c-chip);
 }
 
 .result-cta-btn--review {
   background: #E03131;
+  color: #fff;
 }
 
 .result-cta-btn--review:active {

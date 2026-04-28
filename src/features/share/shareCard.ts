@@ -69,7 +69,7 @@ export async function shareResult(
       if (blob) {
         const file = new File([blob], 'foodquiz-result.png', { type: 'image/png' })
         if (navigator.canShare?.({ files: [file] })) {
-          await navigator.share({ files: [file], title: text.title, text: text.body })
+          await navigator.share({ files: [file] })
           return 'shared'
         }
       }

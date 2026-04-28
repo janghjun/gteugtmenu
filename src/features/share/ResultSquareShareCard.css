@@ -1,3 +1,12 @@
+/*
+  정방형 공유 카드 (1:1) — 280px preview 기준
+  카드: 280 × 280px
+  내부 (padding 22/20): 236 × 238px
+  Top zone:  ~16px (brand pill)
+  Hero zone: ~152px (flex:1)
+  Bottom:    ~70px  (glass panel)
+*/
+
 /* ── 카드 컨테이너 ─────────────────────────────────────── */
 .sq-card {
   position: relative;
@@ -7,14 +16,13 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 24px 24px 20px;
+  padding: 20px 22px 18px;
   box-sizing: border-box;
-  /* 캡처 시 폰트 렌더링 보정 */
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── 배경 장식 SVG ─────────────────────────────────────── */
-.sq-card-deco {
+/* ── 배경 SVG (글로우 블롭 + 그레인) ──────────────────── */
+.sq-card-blobs {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -22,75 +30,98 @@
   pointer-events: none;
 }
 
-/* ── ① 브랜드 영역 ────────────────────────────────────── */
+/* ── ① 브랜드 필 ──────────────────────────────────────── */
 .sq-card-top {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
-.sq-card-brand {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+.sq-card-brand-pill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 100px;
+  padding: 3px 9px;
+  letter-spacing: 0.03em;
 }
 
-.sq-card-brand-sep {
-  font-size: 13px;
-  color: #8B95A1;
+.sq-card-brand-dot {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .sq-card-brand-sub {
-  font-size: 13px;
-  font-weight: 600;
-  color: #4E5968;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 /* ── ② 히어로 ─────────────────────────────────────────── */
+/*
+  justify-content: flex-end 으로 콘텐츠를 하단 정렬
+  → 이모지+텍스트가 점수 패널 바로 위에 자연스럽게 이어짐
+  → 브랜드 pill 아래 여백이 "숨 쉬는 공간"으로 인식됨
+*/
 .sq-card-hero {
   position: relative;
   flex: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  gap: 6px;
-  padding: 12px 0 8px;
+  justify-content: flex-end;
+  padding-bottom: 14px;
 }
 
+/* 이모지: 정방형 히어로 앵커 */
 .sq-card-emoji {
-  font-size: 52px;
+  font-size: 72px;
   line-height: 1;
   display: block;
+  margin-bottom: 6px;
+  flex-shrink: 0;
 }
 
 .sq-card-na {
-  margin: 8px 0 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #4E5968;
+  margin: 0 0 2px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
 }
 
+/* 결과 타입명: 정방형의 주인공 — 크고 굵게 */
 .sq-card-result {
   margin: 0;
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 900;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
   word-break: keep-all;
   overflow-wrap: break-word;
   max-width: 100%;
 }
 
-/* ── ③ 푸터 ──────────────────────────────────────────── */
+/* ── ③ 푸터 — 글래스 패널 ────────────────────────────── */
 .sq-card-footer {
   position: relative;
   flex-shrink: 0;
+}
+
+.sq-card-glass {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 11px 14px 9px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .sq-card-score-line {
@@ -101,30 +132,31 @@
   gap: 2px;
 }
 
+/* 점수 숫자: accent color (inline style) */
 .sq-card-score-num {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 900;
   letter-spacing: -0.02em;
 }
 
 .sq-card-score-denom {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: #4E5968;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .sq-card-score-suffix {
-  font-size: 14px;
-  font-weight: 600;
-  color: #4E5968;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
   margin-left: 2px;
 }
 
 /* 점수 진행 바 */
 .sq-card-bar {
   width: 100%;
-  height: 6px;
-  background: rgba(0, 0, 0, 0.08);
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 100px;
   overflow: hidden;
 }
@@ -132,14 +164,12 @@
 .sq-card-bar-fill {
   height: 100%;
   border-radius: 100px;
-  transition: width 0.3s ease;
 }
 
-/* CTA 문구 */
+/* CTA: accent color (inline style) — 유입 문구 */
 .sq-card-cta {
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: #8B95A1;
   letter-spacing: 0.01em;
 }

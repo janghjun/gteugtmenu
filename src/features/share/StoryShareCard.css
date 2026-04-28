@@ -1,4 +1,12 @@
-/* ── 카드 컨테이너 (9:16) ──────────────────────────────── */
+/*
+  스토리 카드 (9:16) — 230px preview 기준 레이아웃 계산
+  카드: 230 × 409px
+  Top zone:  ~44px  (padding 24 + pill ~20)
+  Hero zone: ~210px (flex:1, overflow:hidden)
+  Bottom:    ~155px (glass + CTA + app + padding)
+*/
+
+/* ── 카드 컨테이너 ─────────────────────────────────────── */
 .st-card {
   position: relative;
   width: 100%;
@@ -7,13 +15,13 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 28px 28px 24px;
+  padding: 0;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── 배경 장식 SVG ─────────────────────────────────────── */
-.st-card-deco {
+/* ── 배경 SVG ─────────────────────────────────────────── */
+.st-card-blobs {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -21,67 +29,80 @@
   pointer-events: none;
 }
 
-/* ── ① 브랜드 영역 ────────────────────────────────────── */
+/* ── ZONE ① 브랜드 (flex-shrink: 0) ──────────────────── */
 .st-card-top {
   position: relative;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-shrink: 0;
+  padding: 24px 24px 0;
 }
 
-.st-card-brand {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+.st-card-brand-pill {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 100px;
+  padding: 3px 10px;
+  letter-spacing: 0.03em;
 }
 
-.st-card-brand-sep {
-  font-size: 14px;
-  color: #8B95A1;
+.st-card-brand-dot {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .st-card-brand-sub {
-  font-size: 14px;
-  font-weight: 600;
-  color: #4E5968;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
 }
 
-/* ── ② 히어로 ─────────────────────────────────────────── */
+/* ── ZONE ② 히어로 (flex:1, overflow:hidden) ─────────── */
+/*
+  available ≈ 210px (409 - 44top - 155bottom)
+  padding: 14top + 10bottom = 24px → content ≤ 186px
+  emoji 72 + margin 12 + eyebrow 17 + gap 5 + result 34×2lines×1.15 ≈ 184px ✓
+*/
 .st-card-hero {
   position: relative;
   flex: 1;
+  /* 콘텐츠가 가용 높이를 초과하면 클립 — 하단 존 보호 */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 20px;
-  padding: 20px 0 12px;
+  padding: 14px 24px 10px;
 }
 
+/* 이모지: 스토리 시각적 앵커 */
 .st-card-emoji {
-  font-size: 80px;
+  font-size: 72px;
   line-height: 1;
   display: block;
-}
-
-.st-card-result-block {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
 }
 
 .st-card-eyebrow {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 700;
+  margin: 0 0 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.01em;
+  flex-shrink: 0;
 }
 
+/* 결과 타입명: 스토리의 주인공 */
 .st-card-result {
   margin: 0;
-  font-size: 36px;
+  font-size: 34px;
   font-weight: 900;
+  color: #fff;
   line-height: 1.15;
   letter-spacing: -0.03em;
   word-break: keep-all;
@@ -89,14 +110,28 @@
   max-width: 100%;
 }
 
-/* ── ③ 점수 블록 ─────────────────────────────────────── */
-.st-card-score-block {
+/* ── ZONE ③ 스코어 + CTA (flex-shrink: 0) ────────────── */
+/*
+  glass 78px + gap 10 + CTA 20 + gap 10 + app 15 + pad 22 = 155px
+*/
+.st-card-bottom {
   position: relative;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 16px;
+  padding: 0 24px 22px;
+}
+
+/* 글래스 패널 */
+.st-card-glass {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  padding: 14px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .st-card-score-line {
@@ -107,6 +142,7 @@
   gap: 2px;
 }
 
+/* 점수 숫자: accent color (inline style) */
 .st-card-score-num {
   font-size: 40px;
   font-weight: 900;
@@ -114,23 +150,23 @@
 }
 
 .st-card-score-denom {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
-  color: #4E5968;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .st-card-score-suffix {
-  font-size: 16px;
-  font-weight: 600;
-  color: #4E5968;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
   margin-left: 3px;
 }
 
 /* 진행 바 */
 .st-card-bar {
   width: 100%;
-  height: 8px;
-  background: rgba(0, 0, 0, 0.08);
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 100px;
   overflow: hidden;
 }
@@ -140,20 +176,11 @@
   border-radius: 100px;
 }
 
-/* ── ④ 하단 CTA ──────────────────────────────────────── */
-.st-card-footer {
-  position: relative;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
+/* CTA: accent color (inline style) */
 .st-card-cta {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
-  color: #191F28;
   letter-spacing: -0.01em;
 }
 
@@ -161,5 +188,5 @@
   margin: 0;
   font-size: 12px;
   font-weight: 600;
-  color: #8B95A1;
+  color: rgba(255, 255, 255, 0.38);
 }

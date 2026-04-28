@@ -39,13 +39,13 @@
   margin: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #8B95A1;
+  color: var(--c-text-4);
   letter-spacing: -0.01em;
 }
 
 /* ── 내 현황 카드 ─────────────────────────────────────── */
 .home-summary-card {
-  background: #F9FAFB;
+  background: var(--c-surface-sub);
   border-radius: 16px;
   padding: 18px 20px;
   min-height: 60px;
@@ -64,25 +64,25 @@
 .home-summary-type {
   font-size: 15px;
   font-weight: 700;
-  color: #191F28;
+  color: var(--c-text-1);
 }
 
 .home-summary-score {
   font-size: 22px;
   font-weight: 800;
-  color: #191F28;
+  color: var(--c-text-1);
   line-height: 1;
 }
 
 .home-summary-score-sep {
   font-size: 16px;
-  color: #8B95A1;
+  color: var(--c-text-4);
   margin: 0 2px;
 }
 
 .home-summary-empty {
   font-size: 14px;
-  color: #8B95A1;
+  color: var(--c-text-4);
   margin: 0;
 }
 
@@ -97,11 +97,11 @@
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
-  background: #fff;
+  background: var(--c-surface);
   border-radius: 100px;
   font-size: 12px;
   font-weight: 600;
-  color: #4E5968;
+  color: var(--c-text-3);
 }
 
 .home-stats-item--weak {
@@ -109,11 +109,17 @@
   color: #E03131;
 }
 
+@media (prefers-color-scheme: dark) {
+  .home-stats-item--weak {
+    background: #2A0A0A;
+  }
+}
+
 /* ── 오늘의 트렌드 한 입 ─────────────────────────────── */
 .home-trend-card {
   width: 100%;
-  background: linear-gradient(135deg, #FFFBEB 0%, #FFF7ED 100%);
-  border: 1.5px solid #FDE68A;
+  background: var(--c-trend-bg);
+  border: 1.5px solid var(--c-trend-border);
   border-radius: 16px;
   padding: 16px 18px;
   display: flex;
@@ -128,7 +134,7 @@
 }
 
 .home-trend-card--action:active {
-  background: #FEF3C7;
+  background: var(--c-trend-active);
 }
 
 .home-trend-card--empty {
@@ -157,14 +163,14 @@
 .home-trend-title {
   font-size: 17px;
   font-weight: 800;
-  color: #191F28;
+  color: var(--c-text-1);
   margin: 2px 0 0;
   letter-spacing: -0.01em;
 }
 
 .home-trend-desc {
   font-size: 14px;
-  color: #4E5968;
+  color: var(--c-text-3);
   line-height: 1.55;
   margin: 0;
 }
@@ -185,15 +191,22 @@
   border-radius: 100px;
 }
 
+@media (prefers-color-scheme: dark) {
+  .home-trend-tag {
+    background: #2A2208;
+    color: #D97706;
+  }
+}
+
 .home-trend-empty {
   font-size: 14px;
-  color: #8B95A1;
+  color: var(--c-text-4);
   margin: 4px 0 0;
 }
 
 /* ── 예시 문제 카드 ──────────────────────────────────── */
 .home-example-card {
-  background: #F9FAFB;
+  background: var(--c-surface-sub);
   border-radius: 16px;
   padding: 18px 20px;
 }
@@ -202,7 +215,7 @@
   display: inline-block;
   font-size: 11px;
   font-weight: 700;
-  color: #8B95A1;
+  color: var(--c-text-4);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-bottom: 10px;
@@ -211,7 +224,7 @@
 .home-example-prompt {
   font-size: 15px;
   font-weight: 600;
-  color: #191F28;
+  color: var(--c-text-1);
   line-height: 1.5;
   margin-bottom: 14px;
 }
@@ -227,11 +240,11 @@
   align-items: center;
   justify-content: center;
   padding: 10px 8px;
-  background: #fff;
-  border: 1.5px solid #E5E8EB;
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-border);
   border-radius: 8px;
   font-size: 13px;
-  color: #4E5968;
+  color: var(--c-text-3);
   text-align: center;
   line-height: 1.3;
 }
@@ -250,8 +263,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: #FFF7ED;
-  border: 1.5px solid #FFEDD5;
+  background: var(--c-daily-bg);
+  border: 1.5px solid var(--c-daily-border);
   border-radius: 14px;
   cursor: pointer;
   font-family: inherit;
@@ -259,7 +272,7 @@
 }
 
 .home-daily-card:active {
-  background: #FFEDD5;
+  background: var(--c-daily-active);
 }
 
 .home-daily-info {
@@ -309,7 +322,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  background: #F2F4F6;
+  background: var(--c-chip);
   border: none;
   border-radius: 12px;
   cursor: default;
@@ -322,14 +335,26 @@
   cursor: pointer;
 }
 
+@media (prefers-color-scheme: dark) {
+  .home-review-row--active {
+    background: #2A0A0A;
+  }
+}
+
 .home-review-row--active:active {
   background: #FFE4E2;
+}
+
+@media (prefers-color-scheme: dark) {
+  .home-review-row--active:active {
+    background: #350E0E;
+  }
 }
 
 .home-review-label {
   font-size: 14px;
   font-weight: 600;
-  color: #8B95A1;
+  color: var(--c-text-4);
 }
 
 .home-review-row--active .home-review-label {
@@ -354,8 +379,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 18px;
-  background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
-  border: 1.5px solid #BBF7D0;
+  background: var(--c-seasonal-bg);
+  border: 1.5px solid var(--c-seasonal-border);
   border-radius: 14px;
   cursor: pointer;
   font-family: inherit;
@@ -363,7 +388,7 @@
 }
 
 .home-seasonal-card:active {
-  background: #D1FAE5;
+  background: var(--c-seasonal-active);
 }
 
 .home-seasonal-info {
@@ -399,14 +424,27 @@
   border-radius: 100px;
 }
 
+@media (prefers-color-scheme: dark) {
+  .home-seasonal-title { color: #4ADE80; }
+  .home-seasonal-sub   { color: #22C55E; }
+  .home-seasonal-count {
+    color: #4ADE80;
+    background: #0A2518;
+  }
+}
+
 .home-seasonal-arrow {
   font-size: 20px;
   color: #16A34A;
 }
 
+@media (prefers-color-scheme: dark) {
+  .home-seasonal-arrow { color: #4ADE80; }
+}
+
 .home-seasonal-empty {
   font-size: 14px;
-  color: #8B95A1;
+  color: var(--c-text-4);
   padding: 14px 0 4px;
   margin: 0;
 }
@@ -421,7 +459,7 @@
 .home-category-label {
   font-size: 13px;
   font-weight: 700;
-  color: #8B95A1;
+  color: var(--c-text-4);
   letter-spacing: 0.02em;
 }
 
@@ -435,27 +473,27 @@
   display: inline-flex;
   align-items: center;
   padding: 9px 16px;
-  background: #F2F4F6;
+  background: var(--c-chip);
   border: none;
   border-radius: 100px;
   font-size: 14px;
   font-weight: 600;
-  color: #333D4B;
+  color: var(--c-text-2);
   cursor: pointer;
   font-family: inherit;
 }
 
 .home-category-chip:active {
-  background: #E5E8EB;
+  background: var(--c-chip-active);
 }
 
 /* ── fallback ────────────────────────────────────────── */
 .home-status-body {
   font-size: 16px;
-  color: #333D4B;
+  color: var(--c-text-2);
 }
 
 .home-status-dim {
   font-size: 16px;
-  color: #8B95A1;
+  color: var(--c-text-4);
 }
